@@ -149,12 +149,19 @@
     });
   }
 
+  function layoutRows(which) {
+    var layout = which || "azerty";
+    var rows = arabic101Rows();
+    if (layout === "azerty") return relabel(rows, AZERTY_LAT);
+    return rows;
+  }
+
   function azertyRows() {
-    return relabel(arabic101Rows(), AZERTY_LAT);
+    return layoutRows("azerty");
   }
 
   function qwertyRows() {
-    return arabic101Rows();
+    return layoutRows("qwerty");
   }
 
   function k(code, ar, shift, lat) {
@@ -354,6 +361,7 @@
       azertyBtn.setAttribute("aria-pressed", state.layout === "azerty" ? "true" : "false");
       qwertyBtn.setAttribute("aria-pressed", state.layout === "qwerty" ? "true" : "false");
       yamliBtn.setAttribute("aria-pressed", state.yamli ? "true" : "false");
+      rootEl.setAttribute("data-layout", state.layout);
       renderBoard();
       renderSuggestions();
     }
@@ -380,7 +388,7 @@
 
     function renderBoard() {
       board.innerHTML = "";
-      var rows = state.layout === "qwerty" ? qwertyRows() : azertyRows();
+      var rows = layoutRows(state.layout);
       var shiftLayer = state.shift || state.caps;
       rows.forEach(function (row) {
         var rowEl = el("div", "ak-kb-row");
@@ -469,7 +477,7 @@
       if (ev.key === "Backspace" || ev.key === "Enter" || ev.key === "Tab" || ev.key === " ") {
         return;
       }
-      var rows = state.layout === "qwerty" ? qwertyRows() : azertyRows();
+      var rows = layoutRows(state.layout);
       var found = null;
       rows.forEach(function (row) {
         row.forEach(function (key) {
